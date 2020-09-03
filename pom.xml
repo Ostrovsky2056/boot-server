@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.ostrovsky</groupId>
+    <artifactId>boot-server</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>boot-server</name>
+    <description>Demo project for Spring Boot</description>
+
+    <!-- spring boot 起步依赖 -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.3.3.RELEASE</version>
+    </parent>
+
+    <!-- 模块 -->
+    <modules>
+        <module>boot-common</module>
+        <module>boot-api</module>
+    </modules>
+
+    <!-- 自定义属性 -->
+    <properties>
+        <java.version>1.8</java.version>
+        <mybatis.version>2.1.3</mybatis.version>
+        <fastjson.version>1.2.71</fastjson.version>
+        <mybatis-plus.version>3.3.0</mybatis-plus.version>
+        <swagger.version>2.9.1</swagger.version>
+        <druid.version>1.1.21</druid.version>
+        <lombok.version>1.18.10</lombok.version>
+        <fastjson.version>1.2.71</fastjson.version>
+        <minio.version>7.0.1</minio.version>
+        <commons-io.version>2.6</commons-io.version>
+        <commons-lang3.version>3.10</commons-lang3.version>
+    </properties>
+
+    <!-- dependencyManagement用于锁定jar包版本
+        那么为什么要锁定jar包版本呢？
+        首先我们要知道maven项目是可以有父子依赖关系的，假设现在有项目A和项目B，
+        我们可以让项目B依赖项目A，那么项目A就是父项目，项目B就是子项目
+        所以父项目A中的所有jar包就会被传递到子项目B中，假设父项目A把spring5版本的jar包传递到了子项目B中，
+        而子项目B却不想使用spring5版本，它想使用spring4版本，则它就可以再导入spring4版本的jar包，
+        因为子项目B在它的项目中直接导入jar包是直接依赖，而父项目A传递过去的jar包是传递依赖，
+        所以直接依赖的jar包就会覆盖掉传递依赖的jar包，即子项目B可以使用spring4版本的jar包
+        那么现在问题来了，子项目和父项目使用的spring版本不一样，这不是搞事情吗，这种情况肯定是不行的
+        所以我们就要在父项目中锁定jar包版本，这样即使子项目又导入了不同版本的jar包，
+        也不会覆盖掉父项目传递过去的jar包版本，子项目只能使用父项目传递过去的jar包版本，
+        这样就能保证子项目和父项目jar包版本的一致性
+
+        注意：dependencyManagement只有锁定jar包的功能，它并没有导入jar包的功能
+        所以我们还要在dependencyManagement标签外，再定义dependencies标签，导入jar包的坐标 -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- mybatis-plus -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+
+            <!-- swagger -->
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger2</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
+                <version>${swagger.version}</version>
+            </dependency>
+
+            <!-- druid 数据源 -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid-spring-boot-starter</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <!-- 全局依赖，子模块会继承引用 -->
+    <dependencies>
+
+        <!-- web 起步依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- spring boot test 起步依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- redis 起步依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+
+        <!-- lettuce pool连接池 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+        </dependency>
+
+        <!-- mysql 驱动依赖 -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
+        </dependency>
+
+        <!-- lombok 插件 -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+        <!-- FastJson 依赖 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastjson.version}</version>
+        </dependency>
+
+        <!-- commons lang3 依赖 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

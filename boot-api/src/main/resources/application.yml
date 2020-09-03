@@ -1,0 +1,14 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: boot-api
+  profiles:
+    active: test
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+
+logging:
+  config: classpath:spring-logback.xml
